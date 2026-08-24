@@ -26,15 +26,39 @@
 		}
 	}
 
-	function translate(raw) {
-		if (!raw) return null;
-		const text = raw.trim();
-		if (!text || !/[\x20-\x7E]/.test(text)) return null; // 空或无 ASCII 可选项（纯中文/符号）直接跳过
+	function translateLine(text) {
+		if (!text) return null;
 		const hit = exact.get(text);
 		if (hit !== undefined) return hit;
 		for (const t of templates) {
 			const m = text.match(t.re);
 			if (m) return text.replace(t.re, t.out);
+		}
+		return null;
+	}
+
+	function translate(raw) {
+		if (!raw) return null;
+		const text = raw.trim();
+		if (!text || !/[\x20-\x7E]/.test(text)) return null; // 空或无 ASCII 可选项（纯中文/符号）直接跳过
+		// 整串精确/模板匹配
+		const whole = translateLine(text);
+		if (whole !== null) return whole;
+		// 多行文本（如 tooltip_description 经 .trim() 拼接的含 \n 整串）：按行拆分翻译，命中行替换、其余保留
+		if (text.includes("\n")) {
+			const lines = text.split("\n");
+			let changed = false;
+			const output = lines
+				.map((line) => {
+					const translated = translateLine(line.trim());
+					if (translated !== null) {
+						changed = true;
+						return translated;
+					}
+					return line;
+				})
+				.join("\n");
+			if (changed) return output;
 		}
 		return null;
 	}

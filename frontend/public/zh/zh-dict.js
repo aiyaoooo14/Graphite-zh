@@ -307,4 +307,27 @@ window.__ZH_DICT__ = {
 	"Place Duplicate": "放置副本",
 	"Cancel": "取消",
 	"Constrain to Axis": "按轴约束",
+
+	// ===== J. Pivot Gizmo 工具提示（pivot.rs tooltip_label/tooltip_description，悬浮框 DOM 文本）=====
+	"Pivot Gizmo": "轴心操纵器",
+	"Enabled: the chosen gizmo type is shown and used to control rotation and scaling.": "启用：显示所选操纵器类型，用于控制旋转与缩放。",
+	"Disabled: rotation and scaling occurs about the center of the selection bounds.": "禁用：旋转与缩放围绕选区边界中心进行。",
+
+	// ===== K. Artboard 节点属性输入名（document_node_definitions.rs Artboard input_metadata）=====
+	"Location": "位置",
+	"Background": "背景",
+	"Clip": "裁剪",
+	"Creates a new Artboard which can be used as a working surface.": "创建一个可用作工作表面的新画板。",
+
+	// ===== L. Pivot 类型下拉（pivot.rs PivotGizmoType Display）及 tooltip 长描述 =====
+	"Pin Custom Pivot": "固定自定义轴心",
+	"Unpin Custom Pivot": "取消固定自定义轴心",
+	"Custom Pivot Reference Point": "自定义轴心参考点",
+	"Custom Pivot": "自定义轴心",
+	"Origin (Average Point)": "原点（平均点）",
+	"Origin (Active Object)": "原点（活动对象）",
+	"Selects which gizmo type is shown and used as the center of rotation/scaling transformations.": "选择显示哪种操纵器类型，作为旋转/缩放变换的中心。",
+	"Custom Pivot: rotates and scales relative to the selection bounds, or elsewhere if dragged.": "自定义轴心：相对于选区边界旋转和缩放；若拖拽则相对拖拽位置。",
+	"Origin (Average Point): rotates and scales about the average point of all selected layer origins.": "原点（平均点）：围绕所有选中图层原点的平均点旋转和缩放。",
+	"Origin (Active Object): rotates and scales about the origin of the most recently selected layer.": "原点（活动对象）：围绕最近选中图层的原点旋转和缩放。",
 };
