@@ -120,7 +120,7 @@
 
 		&.monospace,
 		code {
-			font-family: "Source Code Pro", monospace;
+			font-family: "Source Code Pro", "HarmonyOS Sans SC", monospace;
 			font-size: 12px;
 		}
 

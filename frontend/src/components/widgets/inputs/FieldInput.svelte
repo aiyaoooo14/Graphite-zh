@@ -137,7 +137,7 @@
 		&.monospace {
 			input,
 			textarea {
-				font-family: "Source Code Pro", monospace;
+				font-family: "Source Code Pro", "HarmonyOS Sans SC", monospace;
 			}
 		}
 

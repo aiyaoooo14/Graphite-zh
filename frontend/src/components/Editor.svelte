@@ -237,7 +237,7 @@
 	input,
 	textarea,
 	button {
-		font-family: "Source Sans Pro", Arial, sans-serif;
+		font-family: "Source Sans Pro", "HarmonyOS Sans SC", Arial, sans-serif;
 		font-weight: 400;
 		font-size: 14px;
 		line-height: 1;
