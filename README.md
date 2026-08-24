@@ -28,6 +28,10 @@
 
 想要上游官方的完整功能、提交代码或报告 BUG，请前往官方仓库：[GraphiteEditor/Graphite](https://github.com/GraphiteEditor/Graphite)。
 
+## 汉化效果展示
+
+![Graphite 中文汉化版界面](title.png)
+
 ## 汉化方案
 
 Graphite 桌面版由 **Rust 后端 + Svelte 前端 + CEF 内嵌浏览器** 构成，界面文本主要由 Rust 侧生成并经由 wasm 传给前端渲染。本项目采用**注入式汉化**，不改动上游源码逻辑：
