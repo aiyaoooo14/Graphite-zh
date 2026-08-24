@@ -1,0 +1,19 @@
+HarmonyOS Sans SC 字体许可说明
+==============================
+
+本目录下的字体文件（HarmonyOS_Sans_SC_Regular.ttf / Medium / Bold）
+为华为「HarmonyOS Sans」开源字体。
+
+许可协议：HarmonyOS Sans 字体许可协议（HarmonyOS Sans Font License Agreement），
+允许**免费使用、免费商用**，并允许随软件、网页等载体**再分发**。
+
+使用本字体需遵守的要求（摘要）：
+- 不得出于营销目的单独售卖字体本身；
+- 不得擅自修改字形后再以相同名称发布；
+- 分发时请保留本许可文本与字体文件内嵌的版权/许可声明。
+
+完整许可文本见华为官方页面：
+https://developer.huawei.com/consumer/cn/design/resource/
+
+本仓库随「Graphite-zh」中文汉化版分发该字体，仅用于确保应用界面在
+未预装中文字体的系统上能正确显示中文（详见 README.md 的汉化方案说明）。

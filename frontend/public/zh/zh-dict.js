@@ -285,7 +285,6 @@ window.__ZH_DICT__ = {
 	// ===== H. 选择工具：层级选择下拉（select_tool.rs Display impl + tooltip_label）=====
 	"Shallow Select": "浅层选择",
 	"Deep Select": "深层选择",
-	"Selection Mode": "选择模式",
 	"Shallow Select: clicks initially select the least-nested layers and double clicks drill deeper into the folder hierarchy.": "浅层选择：初始点击选中嵌套最浅的图层，双击以逐层深入文件夹层级。",
 	"Deep Select: clicks directly select the most-nested layers in the folder hierarchy.": "深层选择：点击直接选中文件夹层级中嵌套最深的图层。",
 

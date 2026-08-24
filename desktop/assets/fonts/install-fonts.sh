@@ -28,8 +28,11 @@ for font_file in "$FONT_DIR_SOURCE"/*.ttf; do
 done
 
 if command -v fc-cache >/dev/null 2>&1; then
-	fc-cache -f "$FONT_DIR_TARGET" >/dev/null 2>&1 || true
-	echo "fontconfig 缓存已刷新。"
+	if fc-cache -f "$FONT_DIR_TARGET" >/dev/null 2>&1; then
+		echo "fontconfig 缓存已刷新。"
+	else
+		echo "警告：fc-cache 执行失败，请手动执行：fc-cache -f $FONT_DIR_TARGET"
+	fi
 else
 	echo "警告：未找到 fc-cache，请手动执行：fc-cache -f $FONT_DIR_TARGET"
 fi
