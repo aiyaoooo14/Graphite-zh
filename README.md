@@ -10,6 +10,9 @@
 
 # Graphite 中文汉化版（Graphite-zh）
 
+> [!IMPORTANT]
+> **⚠️ 本仓库是社区个人制作的汉化版，不是 Graphite 官方项目。** 由社区个人维护，仅提供**中文界面汉化**，不提供官方支持与功能保障。完整功能、官方更新与 Bug 修复，请以上游官方仓库 [GraphiteEditor/Graphite](https://github.com/GraphiteEditor/Graphite) 为准。
+
 > 本项目是开源矢量/光栅图形编辑器 [Graphite](https://graphite.art/) 的**中文界面汉化版**（fork 自 [GraphiteEditor/Graphite](https://github.com/GraphiteEditor/Graphite)），
 > 基于上游 `c8667edac`（RC1.0）分支维护，工作分支：`zh-main`。
 
