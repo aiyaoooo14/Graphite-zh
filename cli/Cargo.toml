@@ -1,0 +1,32 @@
+[package]
+name = "graphite-cli"
+version = "0.1.0"
+description = "Headless, message-level Graphite editor CLI: drives the full editor through its message channel (open/save/manipulate documents)"
+authors = ["Graphite Authors <contact@graphite.art>"]
+license = "Apache-2.0"
+edition = "2024"
+rust-version = "1.88"
+publish = false
+
+[dependencies]
+# Local dependencies
+graphite-editor = { workspace = true }
+graph-craft = { workspace = true }
+document-format = { workspace = true, features = ["zip", "xz"] }
+document-container = { workspace = true, features = ["zip", "xz"] }
+# Registry fallback for `inspect`: turns the compiler-stack registry of editor-unopenable .gdd
+# files (e.g. `graphene-cli new --with-nodes` fixtures) back into a NodeNetwork.
+document-graph-storage = { workspace = true }
+
+# Workspace dependencies
+clap = { workspace = true, features = ["cargo", "derive"] }
+glam = { workspace = true }
+tokio = { workspace = true, features = ["rt", "sync", "time", "macros"] }
+log = { workspace = true }
+env_logger = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+# PNG export self-check: decode the artifact and report its dimensions in the summary.
+image = { workspace = true }
+
+[dev-dependencies]

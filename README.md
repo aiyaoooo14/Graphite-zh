@@ -18,13 +18,14 @@
 
 ## ⚠️ 项目定位（重要）
 
-**本仓库只做界面汉化，不做官方代码修复。**
+**本仓库 = 界面汉化 + Agent 自动化增强，不做官方代码修复。**
 
-- ✅ **只做汉化**：翻译 Graphite 的界面文本、整理术语对照、提供中文字体方案。
+- ✅ **界面汉化**：翻译 Graphite 的界面文本、整理术语对照（措辞风格参考 Blender 官方中文）、提供中文字体方案。
+- 🚧 **Agent 自动化（开发中）**：为 Graphite 开放 headless CLI 接口与配套技能 `graphite-draw`，让 AI agent 能以数据方式驱动节点图绘图——**人类提供创意，agent 负责实现**。
 - ✅ **官方更新，我们跟进**：上游 Graphite 有新版本，我们以 merge 方式跟进，保持与官方同步。
 - ✅ **官方修复 BUG，我们才修**：上游修复了功能/逻辑 BUG，会一并合并进来。
 - ❌ **不主动修复官方 BUG**：不会自行修改上游的功能逻辑、算法或架构代码。
-- ⚠️ **例外：仅当 BUG 属于汉化本身**（如翻译词条错误、中文显示乱码/漏译、中文字体方案问题、汉化注入脚本缺陷）时，我们才修复。
+- ⚠️ **例外：仅当 BUG 属于本仓库新增能力**（汉化词条错误、中文显示乱码/漏译、中文字体方案、汉化注入脚本缺陷，以及 CLI/自动化接口的缺陷）时，我们才修复。
 
 想要上游官方的完整功能、提交代码或报告 BUG，请前往官方仓库：[GraphiteEditor/Graphite](https://github.com/GraphiteEditor/Graphite)。
 
@@ -41,7 +42,20 @@ Graphite 桌面版由 **Rust 后端 + Svelte 前端 + CEF 内嵌浏览器** 构�
 - **加载注入**：`frontend/index.html` 在应用挂载前注入脚本。
 - **中文字体**：使用开源的 HarmonyOS Sans SC，随仓库分发（`desktop/assets/fonts/`），安装到用户字体目录后由 CSS 字体栈显式兜底（见下方「字体安装」）。
 
-> 术语对照表见 `document/zh/术语对照表.md`；汉化方案与构建记录见 `document/zh/` 目录。
+## 🚀 新增功能与路线图
+
+**已实现：**
+
+- 🇨🇳 **中文界面汉化**：注入式翻译引擎（约 280 条词条，覆盖菜单/工具/面板/对话框/常用节点），未命中词条安全降级显示英文；
+- 🔤 **中文字体方案**：HarmonyOS Sans SC 随仓库分发 + CSS 字体栈显式兜底，杜绝"豆腐块"。
+
+**开发中（Agent 自动化路线）：**
+
+- 🖥️ **Headless CLI 接口**：基于上游 `graphene-cli` 扩展文档级命令（新建/打开/保存/导出），并开放消息级接口（增删节点、连线、设参、变换、选择）——与 GUI 完全同源，所见即所得；
+- 📖 **节点说明书**：自动导出全部节点（名称/分类/参数 schema）为机器可读清单；
+- 🤖 **`graphite-draw` 技能**：路由化操作手册，教 AI agent 通过 CLI 完成实际绘图（配方库：logo、图标、图表、纹样、批量生成等）。
+
+目标工作流：**人类提供创意 → agent 将创意转译为节点图 → CLI 驱动 Graphite 实现 → 导出反馈人类评审迭代**。节点图的参数化、可 diff 特性让每次修改精确可审计——这是 GUI 操作无法给予的。
 
 ## 字体安装
 
@@ -65,14 +79,12 @@ fc-list | grep -i "HarmonyOS Sans SC"
 cargo run build desktop
 ```
 
-构建产物位于 `target/release/graphite`。安装到本地并部署（参考 `document/zh/` 中的部署说明）：
+构建产物位于 `target/release/graphite`。安装到本地：
 
 ```bash
 install -m755 target/release/graphite ~/.local/lib/graphite/bin/graphite
 patchelf --set-rpath '$ORIGIN/../lib/cef' ~/.local/lib/graphite/bin/graphite
 ```
-
-> 详细的环境准备、依赖版本锁定与部署流程见 `document/zh/汉化任务计划.md`。
 
 ## 与原版的关系
 

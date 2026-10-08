@@ -8,6 +8,7 @@ members = [
 	"desktop/platform/linux",
 	"desktop/platform/mac",
 	"desktop/platform/win",
+	"cli",
 	"document/format",
 	"document/graph-storage",
 	"document/container",

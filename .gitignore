@@ -15,3 +15,5 @@ flamegraph.svg
 .nvim.lua
 /testfiles/
 /document/zh/
+__pycache__/
+*.pyc

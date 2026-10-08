@@ -2104,14 +2104,17 @@ dependencies = [
  "clap",
  "document-container",
  "document-format",
+ "document-graph-storage",
  "fern",
  "futures",
  "graph-craft",
+ "graphene-resource",
  "graphene-std",
  "image",
  "interpreted-executor",
  "log",
  "preprocessor",
+ "serde_json",
  "tokio",
  "wgpu",
  "wgpu-executor",
@@ -2232,6 +2235,25 @@ dependencies = [
  "serde_json",
  "vector-types",
  "wasm-bindgen",
+]
+
+[[package]]
+name = "graphite-cli"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "document-container",
+ "document-format",
+ "document-graph-storage",
+ "env_logger",
+ "glam",
+ "graph-craft",
+ "graphite-editor",
+ "image",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]
