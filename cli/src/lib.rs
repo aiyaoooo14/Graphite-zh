@@ -6,4 +6,5 @@
 pub mod exec;
 pub mod export;
 pub mod inspect;
+pub mod node_list;
 pub mod session;

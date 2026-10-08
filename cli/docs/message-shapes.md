@@ -114,3 +114,40 @@
   `exec`/`export` 给清晰错误。
 - 编辑器加载顺序：先试 registry→runtime，失败才回退 legacy blob。因此 registry 与
   legacy blob 不一致时以 registry 为准（见上条事务坑）。
+
+## 6. `node-list` 查询原语（节点类型权威清单）
+
+```bash
+graphite-cli node-list [--filter <关键词>] [--pretty]
+```
+
+- **零文档模式**：读 editor 静态定义表
+  （`editor/…/node_graph/document_node_definitions.rs:130` 的 `DOCUMENT_NODE_TYPES`，
+  经 `collect_node_types()` + `resolve_document_node_type()` 公开读取器），
+  不开 wgpu 会话、无副作用。条目数 = GUI 可用节点全集（实测 286，2026-10-08）。
+- 每条目：`identifier`（`DefinitionIdentifier` serde 形态，可**原样粘贴**进
+  `CreateNodeFromContextMenu.node_type`）、`serialized`（`NETWORK:Merge` /
+  `PROTONODE:vector_nodes::…::RectangleNode`，适合 grep）、`display_name`、`category`、
+  `is_layer`、`inputs:[{index,name,description,default:{kind,data,exposed}}]`、`outputs`、`description`。
+- **PY-2 痛点的正解**：`Blur` 的权威路径是
+  `PROTONODE:raster_nodes::filter::BlurNode`（category `Raster: Filter`），
+  猜 `vector_nodes::…` 会静默不建点——用 node-list 查，不要猜。
+
+### CreateNodeFromContextMenu 经 exec 注入的实测契约
+
+```json
+[{"Portfolio":{"Document":{"NodeGraph":{"CreateNodeFromContextMenu":{
+  "node_id":999902,
+  "node_type":{"type":"ProtoNode","data":{"name":"vector_nodes::generator_nodes::RectangleNode"}},
+  "xy":[100,100],
+  "add_transaction":false}}}}}]
+```
+
+- **`add_transaction` 必须为 `false`**：`exec` 已把整批包进事务（见 §5）；实测消息内
+  再开事务（`true`）会破坏 storage 快照时序——产物 legacy blob 有新节点、registry 没有，
+  重开即"回滚"（静默丢点，error_count=0）。
+- `node_id` 可指定（数字）以获得确定性 ID；`xy` 为图空间网格坐标 `[i32,i32]`。
+- 无目标文档时的建点流程：对任意可打开的 `.gdd` 执行 exec 注入即可（节点建在根网络）。
+- 实测闭环：node-list 的 Rectangle 默认值
+  （Primary=None、Width=100.0、Height=100.0、Corner Radius=BoxCorners[]、Clamped=true、
+  Individual Corner Radii=false）与建点后重 inspect 读回的参数**逐项一致**。

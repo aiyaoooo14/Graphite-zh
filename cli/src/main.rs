@@ -30,6 +30,15 @@ fn default_resource_cache() -> PathBuf {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+	/// List the editor's authoritative node definitions (read-only, no document needed).
+	NodeList {
+		/// Case-insensitive substring filter over display name / identifier / category.
+		#[arg(long)]
+		filter: Option<String>,
+		/// Pretty-print the JSON for human reading.
+		#[arg(long)]
+		pretty: bool,
+	},
 	/// Open a document, drive the editor to quiescence, and print a node-graph summary.
 	Eval {
 		/// Path to a .graphite (legacy) or .gdd document.
@@ -98,6 +107,19 @@ fn main() -> std::process::ExitCode {
 		.parse_default_env()
 		.try_init();
 
+	// `node-list` is a zero-document query over the editor's static definition table: it needs no
+	// tokio runtime, no wgpu session, and has no side effects, so it short-circuits here.
+	if let Command::NodeList { filter, pretty } = cli.command {
+		let entries = graphite_cli::node_list::collect(filter.as_deref());
+		let text = if pretty {
+			serde_json::to_string_pretty(&entries).expect("node list serializes")
+		} else {
+			serde_json::to_string(&entries).expect("node list serializes")
+		};
+		println!("{text}");
+		return std::process::ExitCode::SUCCESS;
+	}
+
 	// Hand-rolled current-thread runtime instead of `#[tokio::main]`: the session (and the async
 	// spawner runtime embedded in the editor) must be dropped *outside* of an async context, and
 	// tokio forbids dropping a runtime from within one. `#[tokio::main]` would run this whole
@@ -135,6 +157,8 @@ async fn run(cli: Cli, session_slot: &mut Option<HeadlessSession>) -> Result<(),
 	use graphite_cli::inspect;
 
 	match cli.command {
+		// Handled in `main` before any session setup; unreachable here.
+		Command::NodeList { .. } => unreachable!("node-list is a zero-document query handled before session setup"),
 		Command::Eval { document } => {
 			session.open_document(&document).await?;
 			session.settle().await?;
