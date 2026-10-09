@@ -44,7 +44,7 @@ s.connect(merge, downstream, to_input=0)
 
 布尔运算方向语义（`PROTONODE:path_bool_nodes::BooleanOperationNode`，配合 Merge 双口）：
 `SubtractFront` = **先连的减后连的**（Base 减 Content：外圆接 Base、内圆接 Content → 圆环）。
-枚举全集：`Union` / `SubtractFront` / `SubtractBack` / `Intersect` / `Difference`。
+枚举全集：`Union` / `SubtractFront` / `SubtractBack` / `Intersect` / `Difference`（全集可由 `node-list` 的 `enum_variants` 字段查询，勿靠记忆手抄）。
 （node-list 的 default 只列单个变体，全集合法值以本行清单为准。）
 
 ## 参数表
