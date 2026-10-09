@@ -19,6 +19,7 @@ description: 用 Graphite 无头引擎画图。触发词：画图、绘图、矢
 | 查文档结构 / 存盘转换 | sub/document.md |
 | 报错排查 / 没报错但没效果 | sub/troubleshooting.md |
 | 完整案例（照抄改参数） | recipes/INDEX.md |
+| 新配方填写模板 | recipes/TEMPLATE.md |
 | 安装到本机 | install.md |
 
 ## 硬性规则
@@ -26,3 +27,4 @@ description: 用 Graphite 无头引擎画图。触发词：画图、绘图、矢
 1. 节点 proto 路径必须 `node-list` 查得，禁止猜（sub/nodes.md）。
 2. 批次内禁止自带事务（AddTransaction / add_transaction:true）——叠加 = 静默回滚（sub/session.md）。
 3. export 前必须有 artboard（sub/export.md）。
+4. 绘制任务收尾：方案可复用（非平凡节点组合 + ≥2 个可参数化点 + 判据可执行）时，向用户提议沉淀配方；同意后按 recipes/TEMPLATE.md 填写，存 recipes/<名称>.md 并在 INDEX.md 登记。
