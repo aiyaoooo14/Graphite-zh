@@ -6,3 +6,4 @@
 |---|---|---|
 | basic-shapes | 单个几何图形挂图层并导出 | basic-shapes.md |
 | parametric-repeat | 同一图形 N 格网格平铺 | parametric-repeat.md |
+| gradient-bloom | 径向对称图标：渐变花瓣 × 布尔圆环 | gradient-bloom.md |

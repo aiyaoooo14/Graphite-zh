@@ -12,6 +12,9 @@ publish = false
 # Local dependencies
 graphite-editor = { workspace = true }
 graph-craft = { workspace = true }
+# `node-list` enum variants: `ChoiceTypeStatic::list()` (via `core_types` re-export) plus the
+# concrete choice enums (`vector`/`raster`/`text_nodes`/…), all reachable through this re-export hub.
+graphene-std = { workspace = true }
 document-format = { workspace = true, features = ["zip", "xz"] }
 document-container = { workspace = true, features = ["zip", "xz"] }
 # Registry fallback for `inspect`: turns the compiler-stack registry of editor-unopenable .gdd

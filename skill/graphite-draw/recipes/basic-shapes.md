@@ -49,5 +49,5 @@ print(png.saved_path, png.width, png.height)
 ## 预期产物判据
 
 1. `r.node_id_map == {"layer": 1, "rect": 2, "merge": 3}`。
-2. inspect：`nodeCount==4`（layer+rect+merge+artboard）、`param_of(2,"1")=={"F64":123.0}`。
+2. inspect：`st.node_count==4`（layer+rect+merge+artboard）、`st.param_of(2,"1")=={"F64":123.0}`。
 3. SVG：400x300；PNG：512x384。

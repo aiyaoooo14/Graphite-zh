@@ -28,7 +28,7 @@ after.node_count, after.param_of(node_id, idx)   # 与预期比对
 | 叉 | 检查对象 | 字段 / 命令 | 判读 |
 |---|---|---|---|
 | 1 | exec 摘要 | `error_count`、`events[].kind=="error"` 的 `message_index`+`detail` | >0 → 定位到第 N 条消息 |
-| 2 | 文档重开态 | `nodeCount`、`wires`、`param_of(id, idx)` | 操作前后无变化 = 未落盘（坑 2） |
+| 2 | 文档重开态 | raw `nodeCount`（Python 属性 `node_count`）、`wires`、`param_of(id, idx)` | 操作前后无变化 = 未落盘（坑 2） |
 | 3 | 节点类型 | `node-list --filter` 输出的 `identifier` | 与 add_node 参数逐字符比对 |
 
 ## 成功判据

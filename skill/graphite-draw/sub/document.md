@@ -33,6 +33,8 @@ python3 tools/graphite_draw/graphite_draw.py save /tmp/in.graphite -o /tmp/out.g
 
 1. init：`engine.inspect(doc).source == "editor"` 且 `node_count == 0`。
 2. inspect 返回字段：`source`（editor/registry）、`nodeCount`、`nodes[{id,type,identifier,display_name,is_layer,position,params}]`、`wires[{from:{node,output},to:{node,input}}]`、`layers[{id,name,children}]`。
+   字段名对照：raw JSON 是 `nodeCount`，Python `InspectResult` 属性是 `node_count`（`st.node_count` == `st.raw["nodeCount"]`）。
+   `layers` 只返回**根层容器**（artboard / 根图层一级，如 `[{"id":900,"name":"Artboard","children":[…]}]`）；子层不在顶层列表，沿 `children` 逐级下钻。
 3. save：`result.path` 是输出路径，`result.bytes_written > 0`；重开 inspect `source=="editor"`。
 
 ## 常见错误

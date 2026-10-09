@@ -61,7 +61,7 @@ print(png.saved_path, png.width, png.height)
 
 1. `r.ok is True`；`r.message_count == N*6 + 1`（每格 6 操作 + RunGraph）。
 2. `r.node_id_map` 含 `cell0..cell{N-1}`、`rect0..rect{N-1}`，共 2N 个锚点。
-3. inspect：`nodeCount == 3N + 1`——N 层 + N 矩形 + artboard + **N 个编辑器自动插入的
+3. inspect：`st.node_count == 3N + 1`——N 层 + N 矩形 + artboard + **N 个编辑器自动插入的
    TransformNode**（`transform(layer,…)` 在层链插入 `transform_nodes::transform_nodes::TransformNode`，
    随机大 NodeId，属编辑器行为，不计入锚点）。
 4. SVG：宽 = N×PITCH（N=3 → 270x200）；PNG 宽 = 600。

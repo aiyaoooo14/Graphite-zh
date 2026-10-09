@@ -20,7 +20,9 @@
 use graphite_editor::messages::portfolio::document::node_graph::document_node_definitions::{
     collect_node_types, resolve_document_node_type, DefinitionIdentifier,
 };
+use graph_craft::document::value::TaggedValue;
 use graph_craft::document::NodeInput;
+use graphene_std::choice_type::ChoiceTypeStatic;
 use serde::Serialize;
 
 /// One node definition in the catalog.
@@ -54,6 +56,24 @@ pub struct NodeListInput {
     /// payload, including editor-internal `TypeDefault` placeholders), `import` (an external
     /// connection slot), `node` (a template-internal wire), or `scope`/`reflection`/`inline`.
     pub default: serde_json::Value,
+    /// The full legal-value set when the input's type is a known choice enum (see
+    /// [`choice_variants`]); omitted otherwise. Each variant's `name` is the exact serde
+    /// spelling accepted inside `SetInputValue`'s `value` object (e.g.
+    /// `{"BooleanOperation":"SubtractFront"}`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enum_variants: Option<Vec<NodeListEnumVariant>>,
+}
+
+/// One legal enum variant of a choice-typed input.
+#[derive(Debug, Clone, Serialize)]
+pub struct NodeListEnumVariant {
+    /// Source-declared variant name — paste this into a `SetInputValue` value object.
+    pub name: String,
+    /// UI label (may contain spaces; not a valid serde spelling).
+    pub label: String,
+    /// Optional user-facing documentation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
 }
 
 /// Collect the full node catalog, optionally filtered by a case-insensitive substring match on
@@ -88,6 +108,7 @@ pub fn collect(filter: Option<&str>) -> Vec<NodeListEntry> {
                         .map(|metadata| metadata.persistent_metadata.input_description.clone())
                         .unwrap_or_default(),
                     default: describe_input(input),
+                    enum_variants: input.as_value().and_then(choice_variants),
                 })
                 .collect();
 
@@ -139,5 +160,110 @@ fn describe_input(input: &NodeInput) -> serde_json::Value {
         NodeInput::Scope(key) => serde_json::json!({ "kind": "scope", "key": key.as_ref() }),
         NodeInput::Reflection(_) => serde_json::json!({ "kind": "reflection" }),
         NodeInput::Inline(_) => serde_json::json!({ "kind": "inline" }),
+    }
+}
+
+/// The full legal-value set for a choice-typed input default, or `None` when its type is not a
+/// known choice enum.
+///
+/// Primary path: `TaggedValue`'s enum variants directly carry the concrete type, and every choice
+/// enum in the graph library derives `ChoiceType` (`node-macro`), whose generated
+/// `ChoiceTypeStatic::list()` yields the variants with their UI labels/descriptions — including
+/// the `#[label]`/`#[icon]` metadata and `menu_separator` groups (flattened here, order preserved).
+/// Adding a new variant to such an enum therefore flows through automatically.
+///
+/// Hand-maintained fallbacks (kept as match arms so a new `TaggedValue` enum variant without
+/// `derive(ChoiceType)` fails to compile here until it is either derived or added explicitly):
+/// - `BlendMode` predates the derive and keeps a hand-written grouped `list()`; the three
+///   alpha-utility modes (`Erase`/`Restore`/`MultiplyAlpha`) are outside that list but remain
+///   legal serde values, so they are appended.
+/// - `ReferencePoint` is a plain serde enum without the derive; its ten variants are listed
+///   statically (mirroring `reference_point.rs`).
+fn choice_variants(tagged: &TaggedValue) -> Option<Vec<NodeListEnumVariant>> {
+    macro_rules! choice {
+        ($($variant:ident => $ty:ty),* $(,)?) => {
+            match tagged {
+                $(
+                    TaggedValue::$variant(_) => Some(
+                        <$ty as ChoiceTypeStatic>::list()
+                            .iter()
+                            .flat_map(|group| group.iter())
+                            .map(|(_value, metadata)| NodeListEnumVariant {
+                                name: metadata.name.to_string(),
+                                label: metadata.label.to_string(),
+                                description: metadata.description.map(str::to_string),
+                            })
+                            .collect(),
+                    ),
+                )*
+                TaggedValue::BlendMode(_) => Some(
+                    graphene_std::blending::BlendMode::list()
+                        .iter()
+                        .flat_map(|group| group.iter())
+                        .chain([
+                            &graphene_std::blending::BlendMode::Erase,
+                            &graphene_std::blending::BlendMode::Restore,
+                            &graphene_std::blending::BlendMode::MultiplyAlpha,
+                        ])
+                        .map(|mode| NodeListEnumVariant {
+                            name: format!("{mode:?}"),
+                            label: mode.to_string(),
+                            description: None,
+                        })
+                        .collect(),
+                ),
+                TaggedValue::ReferencePoint(_) => Some(
+                    [
+                        "None", "TopLeft", "TopCenter", "TopRight", "CenterLeft", "Center", "CenterRight", "BottomLeft", "BottomCenter", "BottomRight",
+                    ]
+                    .into_iter()
+                    .map(|name| NodeListEnumVariant {
+                        name: name.to_string(),
+                        label: name.to_string(),
+                        description: None,
+                    })
+                    .collect(),
+                ),
+                _ => None,
+            }
+        };
+    }
+
+    choice! {
+        LuminanceCalculation => graphene_std::raster::LuminanceCalculation,
+        QRCodeErrorCorrectionLevel => graphene_std::vector_nodes::generator_nodes::QRCodeErrorCorrectionLevel,
+        XY => graphene_std::extract_xy::XY,
+        StringCapitalization => graphene_std::text_nodes::StringCapitalization,
+        RedGreenBlue => graphene_std::raster::RedGreenBlue,
+        RedGreenBlueAlpha => graphene_std::raster::RedGreenBlueAlpha,
+        RealTimeMode => graphene_std::animation::RealTimeMode,
+        NoiseType => graphene_std::raster::NoiseType,
+        FractalType => graphene_std::raster::FractalType,
+        CellularDistanceFunction => graphene_std::raster::CellularDistanceFunction,
+        CellularReturnType => graphene_std::raster::CellularReturnType,
+        DomainWarpType => graphene_std::raster::DomainWarpType,
+        RelativeAbsolute => graphene_std::raster::RelativeAbsolute,
+        SelectiveColorChoice => graphene_std::raster::SelectiveColorChoice,
+        GridType => graphene_std::vector::misc::GridType,
+        ArcType => graphene_std::vector::misc::ArcType,
+        RowsOrColumns => graphene_std::vector::misc::RowsOrColumns,
+        MergeByDistanceAlgorithm => graphene_std::vector::misc::MergeByDistanceAlgorithm,
+        ExtrudeJoiningAlgorithm => graphene_std::vector::misc::ExtrudeJoiningAlgorithm,
+        PointSpacingType => graphene_std::vector::misc::PointSpacingType,
+        SpiralType => graphene_std::vector::misc::SpiralType,
+        InterpolationDistribution => graphene_std::vector::misc::InterpolationDistribution,
+        StrokeCap => graphene_std::vector::style::StrokeCap,
+        StrokeJoin => graphene_std::vector::style::StrokeJoin,
+        StrokeAlign => graphene_std::vector::style::StrokeAlign,
+        GradientForm => graphene_std::vector::style::GradientForm,
+        GradientSpread => graphene_std::vector::style::GradientSpread,
+        GradientSpace => graphene_std::vector::style::GradientSpace,
+        GradientHueDirection => graphene_std::vector::style::GradientHueDirection,
+        GradientInterpolation => graphene_std::vector::style::GradientInterpolation,
+        CentroidType => graphene_std::vector::misc::CentroidType,
+        BooleanOperation => graphene_std::vector::misc::BooleanOperation,
+        TextAlign => graphene_std::text_nodes::TextAlign,
+        ScaleType => graphene_std::transform::ScaleType,
+        PaintOrder => graphene_std::vector::style::PaintOrder,
     }
 }

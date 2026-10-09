@@ -2248,6 +2248,7 @@ dependencies = [
  "env_logger",
  "glam",
  "graph-craft",
+ "graphene-std",
  "graphite-editor",
  "image",
  "log",
